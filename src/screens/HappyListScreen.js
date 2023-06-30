@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image } from "react-native";
 import db from "../services/SQLiteDatabase";
+import ListItem from "../components/ListItem";
 
 const HappyListScreen = ({ navigation }) => {
   const [happyList, setHappyList] = useState([]);

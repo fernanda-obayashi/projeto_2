@@ -56,6 +56,7 @@ const CreateHappyListScreen = () => {
   };
 
   useEffect(() => {
+    createTables();
     if (selectedCatType) {
       fetch(`https://cataas.com/cat/${selectedCatType}`)
         .then((response) => response.url)
