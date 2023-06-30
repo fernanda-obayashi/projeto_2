@@ -31,6 +31,22 @@ const CreateHappyListScreen = () => {
     });
   };
 
+  const loadHappyList = () => {
+    db.transaction((tx) => {
+      tx.executeSql(
+        "SELECT * FROM happy_items",
+        [],
+        (_, result) => {
+          const items = result.rows._array;
+          setHappyList(items);
+        },
+        (error) => {
+          console.log("Error retrieving items from database:", error);
+        }
+      );
+    });
+  };
+
   const handleAddItem = () => {
     if (happyReason) {
       const newItem = {
@@ -38,11 +54,16 @@ const CreateHappyListScreen = () => {
         catType: selectedCatType,
         catImage: catImage,
       };
+
+      console.log(newItem);
       db.transaction((tx) => {
         tx.executeSql(
           "INSERT INTO happy_items (reason, catType, catImage) VALUES (?, ?, ?)",
           [newItem.reason, newItem.catType, newItem.catImage],
-          () => {
+          (_, result) => {
+            const { insertId } = result;
+            const insertedItem = { id: insertId, ...newItem };
+            setHappyList((prevList) => [...prevList, insertedItem]);
             setHappyReason("");
             setSelectedCatType(null);
             setCatImage(null);
@@ -57,6 +78,7 @@ const CreateHappyListScreen = () => {
 
   useEffect(() => {
     createTables();
+    loadHappyList();
     if (selectedCatType) {
       fetch(`https://cataas.com/cat/${selectedCatType}`)
         .then((response) => response.url)

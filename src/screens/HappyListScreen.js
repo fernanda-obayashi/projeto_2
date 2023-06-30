@@ -12,10 +12,7 @@ const HappyListScreen = ({ navigation }) => {
         "SELECT * FROM happy_items",
         [],
         (_, result) => {
-          const items = [];
-          for (let i = 0; i < result.rows.length; i++) {
-            items.push(result.rows.item(i));
-          }
+          const items = result.rows._array;
           setHappyList(items);
         },
         (error) => {
@@ -23,17 +20,16 @@ const HappyListScreen = ({ navigation }) => {
         }
       );
     });
+
+    console.log(happyList);
   }, []);
 
   return (
     <View>
       <Text>HappyListScreen</Text>
+
       {happyList.map((item) => (
-        <ListItem
-          key={item.id}
-          happyReason={item.happyReason}
-          catType={item.catType}
-        />
+        <ListItem key={item.id} reason={item.reason} catType={item.catType} />
       ))}
     </View>
   );
